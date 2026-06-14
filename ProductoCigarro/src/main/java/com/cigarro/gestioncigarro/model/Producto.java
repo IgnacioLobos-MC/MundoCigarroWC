@@ -32,4 +32,8 @@ public class Producto {
 
     @Column(unique = false, nullable = false)
     private Float precio;
+
+    @Column(unique = false, nullable = false)
+    private Long idProveedor;
+
 }
