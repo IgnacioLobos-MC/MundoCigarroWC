@@ -11,8 +11,14 @@ import com.mundocigarro.auth.model.Usuario;
 import com.mundocigarro.auth.repository.UsuarioRepository;
 import com.mundocigarro.auth.security.JwtProvider;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/auth")
+@Tag(name = "Autenticación",
+    description = "Endpoints para gestionar la autenticación de usuarios en Mundo Cigarro"
+)
 public class AuthController {
 
     @Autowired
@@ -22,6 +28,10 @@ public class AuthController {
     private JwtProvider jwtProvider;
 
     @PostMapping("/login")
+    @Operation(summary = "Iniciar Sesión",
+        description = "Permite a los usuarios iniciar sesión y obtener un token JWT para autenticación"
+    )
+    
     public ResponseEntity<?> login(@RequestBody LoginRequest request){
 
         Usuario usuario = usuarioRepository.findByUsername(request.getUsername()).orElse(null);

@@ -9,14 +9,21 @@ import org.springframework.web.bind.annotation.*;
 import com.mundocigarro.proveedor.model.Proveedor;
 import com.mundocigarro.proveedor.service.ProveedorService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/proveedores")
+@Tag(name = "Proveedor Controller", description = "Endpoints para gestionar proveedores")
+
 public class ProveedorController {
 
     @Autowired
     private ProveedorService proveedorService;
 
     @GetMapping
+    @Operation(summary = "Listar Proveedores", description = "Obtiene una lista de todos los proveedores registrados")
+    
     public ResponseEntity<List<Proveedor>> listar(){
         List<Proveedor> proveedores =
                 proveedorService.mostrarProveedores();
@@ -27,6 +34,8 @@ public class ProveedorController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar Proveedor", description = "Obtiene un proveedor específico por su ID")
+    
     public ResponseEntity<Proveedor> buscar(@PathVariable Long id){
 
         Proveedor proveedor = proveedorService.obtenerProveedorPorId(id);
@@ -37,12 +46,16 @@ public class ProveedorController {
     }
 
     @PostMapping
+    @Operation(summary = "Crear Proveedor", description = "Crea un nuevo proveedor")
+    
     public ResponseEntity<Proveedor> guardar(@RequestBody Proveedor proveedor){
 
         return ResponseEntity.ok( proveedorService.crearProveedor(proveedor));
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Modificar Proveedor", description = "Actualiza la información de un proveedor existente")
+    
     public ResponseEntity<Proveedor> modificar(@PathVariable Long id, @RequestBody Proveedor proveedor){
 
         try {
@@ -66,6 +79,8 @@ public class ProveedorController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar Proveedor", description = "Elimina un proveedor existente")
+    
     public ResponseEntity<String> eliminar(
             @PathVariable Long id){
 

@@ -15,8 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cigarro.clientecigarro.model.Cliente;
 import com.cigarro.clientecigarro.service.ClienteService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/clientes")
+@Tag(name = "Cliente", 
+description = "Operaciones relacionadas con los clientes")
 
 public class ClienteController {
 
@@ -24,6 +29,8 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @GetMapping
+    @Operation(summary = "Listar clientes", description = "Obtiene una lista de todos los clientes registrados en el sistema.")
+
     public ResponseEntity<List<Cliente>> listar() {
         List<Cliente> clientes = clienteService.mostrarCliente();
         if (clientes.isEmpty()) {
@@ -33,6 +40,7 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}")//buscar por id
+    @Operation(summary = "Obtener cliente", description = "Obtiene los detalles de un cliente específico por su ID.")
     public ResponseEntity<Cliente> obtenerCliente(@PathVariable Long id) {
         try {
             Cliente cliente = clienteService.buscaClienteId(id);
@@ -43,12 +51,14 @@ public class ClienteController {
     }
 
     @PostMapping
+    @Operation(summary = "Crear cliente", description = "Crea un nuevo cliente en el sistema.")
     public ResponseEntity<Cliente> guardarCliente(@RequestBody Cliente unCliente) {
         Cliente clienteNuevo = clienteService.creaCliente(unCliente);
         return ResponseEntity.status(HttpStatus.CREATED).body(clienteNuevo);
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Modificar cliente", description = "Modifica los datos de un cliente específico por su ID.")
     public ResponseEntity<Cliente> modificar(@PathVariable Long id, @RequestBody Cliente unCliente) {
         try {
             Cliente cli = clienteService.buscaClienteId(id);
@@ -64,6 +74,7 @@ public class ClienteController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar cliente", description = "Elimina un cliente específico por su ID.")
     public String eliminarCliente(@PathVariable Long id) {
         try {
             clienteService.eliminarCliente(id);

@@ -10,14 +10,21 @@ import org.springframework.web.bind.annotation.*;
 import com.mundocigarro.detalleventa.model.DetalleVenta;
 import com.mundocigarro.detalleventa.service.DetalleVentaService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/detalleventa")
+@Tag(name = "DetalleVenta", description = "Operaciones relacionadas con los detalles de venta")
+
 public class DetalleVentaController {
 
     @Autowired
     private DetalleVentaService detalleVentaService;
 
     @GetMapping
+    @Operation(summary = "Listar detalles de venta", description = "Obtiene una lista de todos los detalles de venta")
+
     public ResponseEntity<List<DetalleVenta>> listar(){
 
         List<DetalleVenta> lista = detalleVentaService.listar();
@@ -30,6 +37,8 @@ public class DetalleVentaController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar detalle de venta", description = "Obtiene un detalle de venta por su ID")
+    
     public ResponseEntity<DetalleVenta> buscar(@PathVariable Long id){
 
         try{
@@ -42,6 +51,8 @@ public class DetalleVentaController {
     }
 
     @GetMapping("/venta/{idVenta}")
+    @Operation(summary = "Buscar detalles de venta por ID de venta", description = "Obtiene una lista de detalles de venta por su ID de venta")
+
     public ResponseEntity<List<DetalleVenta>> buscarPorVenta(@PathVariable Long idVenta){
 
         List<DetalleVenta> lista = detalleVentaService.buscarPorVenta(idVenta);
@@ -54,6 +65,8 @@ public class DetalleVentaController {
     }
 
     @PostMapping
+    @Operation(summary = "Guardar detalle de venta", description = "Crea un nuevo detalle de venta")
+    
     public ResponseEntity<DetalleVenta> guardar(@RequestBody DetalleVenta detalleVenta){
 
         DetalleVenta nuevo = detalleVentaService.guardar(detalleVenta);
@@ -62,6 +75,8 @@ public class DetalleVentaController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar detalle de venta", description = "Elimina un detalle de venta por su ID")
+    
     public ResponseEntity<Void> eliminar(@PathVariable Long id){
 
         detalleVentaService.eliminar(id);
