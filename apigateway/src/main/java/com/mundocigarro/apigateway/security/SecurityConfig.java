@@ -38,21 +38,27 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-                    // Login libre
+                    // AUTH LIBRE
                     .requestMatchers(
                             "/api/v1/auth/**")
                     .permitAll()
 
-                    // Solo ADMIN
+                    // CLIENTES - SOLO ADMIN
+                    .requestMatchers(
+                            "/api/v1/clientes/**")
+                    .hasRole("ADMIN")
+
+                    // PROVEEDORES - SOLO ADMIN
                     .requestMatchers(
                             "/api/v1/proveedores/**")
                     .hasRole("ADMIN")
 
+                    // INVENTARIO - SOLO ADMIN
                     .requestMatchers(
                             "/api/v1/inventario/**")
                     .hasRole("ADMIN")
 
-                    // Productos: todos pueden ver
+                    // PRODUCTOS - TODOS PUEDEN VER
                     .requestMatchers(
                             HttpMethod.GET,
                             "/api/v1/productos/**")
@@ -60,7 +66,7 @@ public class SecurityConfig {
                             "ADMIN",
                             "CLIENTE")
 
-                    // Productos: solo ADMIN modifica
+                    // PRODUCTOS - SOLO ADMIN MODIFICA
                     .requestMatchers(
                             HttpMethod.POST,
                             "/api/v1/productos/**")
@@ -76,23 +82,30 @@ public class SecurityConfig {
                             "/api/v1/productos/**")
                     .hasRole("ADMIN")
 
-                    // Ventas
+                    // VENTAS
                     .requestMatchers(
                             "/api/v1/ventas/**")
                     .hasAnyRole(
                             "ADMIN",
                             "CLIENTE")
 
-                    // Delivery
+                    // DETALLE VENTA
                     .requestMatchers(
-                            "/api/v1/delivery/**")
+                            "/api/v1/detalleventa/**")
                     .hasAnyRole(
                             "ADMIN",
                             "CLIENTE")
 
-                    // Pagos
+                    // PAGOS
                     .requestMatchers(
                             "/api/v1/pagos/**")
+                    .hasAnyRole(
+                            "ADMIN",
+                            "CLIENTE")
+
+                    // DELIVERY
+                    .requestMatchers(
+                            "/api/v1/delivery/**")
                     .hasAnyRole(
                             "ADMIN",
                             "CLIENTE")
