@@ -1,6 +1,7 @@
 package com.mundocigarro.detalleventa;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
@@ -124,6 +125,33 @@ public class DetalleVentaServiceTests {
         verify(detalleVentaRepository, times(1))
                 .save(any(DetalleVenta.class));
     }
+    
+    @Test
+@DisplayName("No debe guardar detalle cuando la venta no existe")
+void testGuardarDetalleVentaInexistente() {
+
+    DetalleVenta detalle = new DetalleVenta();
+
+    detalle.setIdProducto(1L);
+    detalle.setIdVenta(1L);
+
+    ProductoDto producto = new ProductoDto();
+    producto.setPrecio(1000.0);
+
+    when(productoService.obtenerProducto(1L))
+            .thenReturn(producto);
+
+    when(ventaService.obtenerVenta(1L))
+            .thenReturn(null);
+
+    DetalleVenta resultado =
+            detalleVentaService.guardar(detalle);
+
+    assertNull(resultado);
+
+    verify(detalleVentaRepository, never())
+            .save(any(DetalleVenta.class));
+}
 
     @Test
     @DisplayName("Debe eliminar detalle de venta")

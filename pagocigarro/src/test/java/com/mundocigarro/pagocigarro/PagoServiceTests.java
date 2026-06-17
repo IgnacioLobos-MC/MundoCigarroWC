@@ -1,6 +1,7 @@
 package com.mundocigarro.pagocigarro;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
@@ -89,6 +90,65 @@ public class PagoServiceTests {
         verify(pagoRepository, times(1))
                 .save(pago);
     }
+
+    @Test
+        @DisplayName("No debe guardar pago cuando la venta no existe")
+        void testGuardarPagoVentaInexistente() {
+
+        Pago pago = new Pago();
+        pago.setIdVenta(1L);
+
+        when(ventaService.obtenerVenta(1L))
+                .thenReturn(null);
+
+        Pago resultado = pagoService.guardar(pago);
+
+        assertNull(resultado);
+
+        verify(pagoRepository, never())
+                .save(any(Pago.class));
+        }
+
+        @Test
+        @DisplayName("Debe actualizar un pago existente")
+        void testActualizarPago() {
+
+        Pago pagoExistente = new Pago();
+
+        pagoExistente.setIdPago(1L);
+        pagoExistente.setMetodoPago("Efectivo");
+        pagoExistente.setMonto(10000.0);
+        pagoExistente.setEstadoPago("Pendiente");
+
+        Pago pagoActualizado = new Pago();
+
+        pagoActualizado.setMetodoPago("Tarjeta");
+        pagoActualizado.setMonto(15000.0);
+        pagoActualizado.setEstadoPago("Pagado");
+
+        when(pagoRepository.findById(1L))
+                .thenReturn(Optional.of(pagoExistente));
+
+        when(pagoRepository.save(any(Pago.class)))
+                .thenReturn(pagoExistente);
+
+        Pago resultado =
+                pagoService.actualizar(1L, pagoActualizado);
+
+        assertNotNull(resultado);
+
+        assertEquals("Tarjeta",
+                resultado.getMetodoPago());
+
+        assertEquals(15000.0,
+                resultado.getMonto());
+
+        assertEquals("Pagado",
+                resultado.getEstadoPago());
+
+        verify(pagoRepository)
+                .save(any(Pago.class));
+        }
 
     @Test
     @DisplayName("Debe eliminar pago")
