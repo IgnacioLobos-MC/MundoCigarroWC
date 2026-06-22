@@ -25,62 +25,39 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-protected void doFilterInternal(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        FilterChain filterChain)
-        throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain)
+            throws ServletException, IOException {
 
-    String authHeader =
-            request.getHeader(HttpHeaders.AUTHORIZATION);
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-    System.out.println("HEADER: " + authHeader);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
-    if (authHeader != null &&
-            authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
 
-        String token = authHeader.substring(7);
+            if (jwtProvider.validateToken(token)) {
 
-        System.out.println("TOKEN: " + token);
+                String username = jwtProvider.extractUsername(token);
+                String rol = jwtProvider.extractRole(token);
 
-        boolean valido =
-                jwtProvider.validateToken(token);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(username,null,
+                                List.of(new SimpleGrantedAuthority("ROLE_" + rol)));
 
-        System.out.println("VALIDO: " + valido);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        if (valido) {
+            } else {
 
-            String username =
-                    jwtProvider.extractUsername(token);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\": \"Token invalido o expirado\"}");
 
-            String rol =
-                    jwtProvider.extractRole(token);
-
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            username,
-                            null,
-                            List.of(
-                                    new SimpleGrantedAuthority(
-                                            "ROLE_" + rol)));
-
-            SecurityContextHolder.getContext()
-                    .setAuthentication(authentication);
-
-        } else {
-
-            response.setStatus(
-                    HttpServletResponse.SC_UNAUTHORIZED);
-
-            response.setContentType("application/json");
-
-            response.getWriter().write(
-                    "{\"error\": \"Token invalido o expirado\"}");
-
-            return;
+                return;
+            }
         }
-    }
 
-    filterChain.doFilter(request, response);
-}
+        filterChain.doFilter(request,response);
+    }
 }

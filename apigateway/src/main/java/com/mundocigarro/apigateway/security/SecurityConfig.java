@@ -38,27 +38,21 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-                    // AUTH LIBRE
+                    // Login libre
                     .requestMatchers(
                             "/api/v1/auth/**")
                     .permitAll()
 
-                    // CLIENTES - SOLO ADMIN
-                    .requestMatchers(
-                            "/api/v1/clientes/**")
-                    .hasRole("ADMIN")
-
-                    // PROVEEDORES - SOLO ADMIN
+                    // Solo ADMIN
                     .requestMatchers(
                             "/api/v1/proveedores/**")
                     .hasRole("ADMIN")
 
-                    // INVENTARIO - SOLO ADMIN
                     .requestMatchers(
                             "/api/v1/inventario/**")
                     .hasRole("ADMIN")
 
-                    // PRODUCTOS - TODOS PUEDEN VER
+                    // Productos: todos pueden ver
                     .requestMatchers(
                             HttpMethod.GET,
                             "/api/v1/productos/**")
@@ -66,7 +60,7 @@ public class SecurityConfig {
                             "ADMIN",
                             "CLIENTE")
 
-                    // PRODUCTOS - SOLO ADMIN MODIFICA
+                    // Productos: solo ADMIN modifica
                     .requestMatchers(
                             HttpMethod.POST,
                             "/api/v1/productos/**")
@@ -82,33 +76,80 @@ public class SecurityConfig {
                             "/api/v1/productos/**")
                     .hasRole("ADMIN")
 
-                    // VENTAS
+                    // Ventas
                     .requestMatchers(
                             "/api/v1/ventas/**")
                     .hasAnyRole(
                             "ADMIN",
                             "CLIENTE")
 
-                    // DETALLE VENTA
+                    // Delivery
                     .requestMatchers(
-                            "/api/v1/detalleventa/**")
+                            "/api/v1/delivery/**")
                     .hasAnyRole(
                             "ADMIN",
                             "CLIENTE")
 
-                    // PAGOS
+                    // Pagos
                     .requestMatchers(
                             "/api/v1/pagos/**")
                     .hasAnyRole(
                             "ADMIN",
                             "CLIENTE")
 
-                    // DELIVERY
+                    // Consultar rutas
                     .requestMatchers(
-                            "/api/v1/delivery/**")
+                        "/api/v1/rutas/**")
                     .hasAnyRole(
-                            "ADMIN",
-                            "CLIENTE")
+                        "ADMIN",
+                        "CLIENTE")
+
+                     // Conductores
+                     .requestMatchers(
+                             HttpMethod.GET,
+                        "/api/v1/conductores/**")
+                     .hasAnyRole(
+                        "ADMIN",
+                        "CLIENTE")
+
+                      .requestMatchers(
+                              HttpMethod.POST,
+                        "/api/v1/conductores/**")
+                      .hasRole("ADMIN")
+
+                      .requestMatchers(
+                              HttpMethod.PUT,
+                        "/api/v1/conductores/**")
+                      .hasRole("ADMIN")
+
+                      .requestMatchers(
+                              HttpMethod.DELETE,
+                        "/api/v1/conductores/**")
+                      .hasRole("ADMIN")
+
+
+                     // Vehículos
+                     .requestMatchers(
+                             HttpMethod.GET,
+                     "/api/v1/vehiculos/**")
+                     .hasAnyRole(
+                        "ADMIN",
+                        "CLIENTE")
+
+                     .requestMatchers(
+                             HttpMethod.POST,
+                     "/api/v1/vehiculos/**")
+                     .hasRole("ADMIN")
+
+                     .requestMatchers(
+                             HttpMethod.PUT,
+                     "/api/v1/vehiculos/**")
+                     .hasRole("ADMIN")
+
+                     .requestMatchers(
+                             HttpMethod.DELETE,
+                     "/api/v1/vehiculos/**")
+                     .hasRole("ADMIN")
 
                     .anyRequest()
                     .authenticated())
